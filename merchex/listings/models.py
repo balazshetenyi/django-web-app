@@ -30,7 +30,9 @@ class Listing(models.Model):
         
     
     title = models.CharField(max_length=100)
+    band = models.ForeignKey(Band, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=1000)
     sold = models.BooleanField(default=False)
     year = models.IntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2024)])
     type = models.CharField(choices=Type.choices, max_length=100)
+    like_new = models.fields.BooleanField(default=False)
