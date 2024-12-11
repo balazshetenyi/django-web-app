@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 
 from listings.models import Band, Listing
-from listings.forms import ContactUsForm
+from listings.forms import ContactUsForm, BandForm, ListingForm
 
 def band_list(request):
     bands = Band.objects.all()
@@ -23,6 +23,24 @@ def band_detail(request, id):
     return render(request, 'listings/band_detail.html', context)
 
 
+def band_create(request):
+    if request.method == 'POST':
+        form = BandForm(request.POST)
+        if form.is_valid():
+            # create a new `Band` and save it to the db
+            band = form.save()
+            # redirect to the detail page of the band we just created
+            # we can provide the url pattern arguments as arguments to redirect function
+            return redirect('band-detail', band.id)
+
+    else:
+        form = BandForm()
+
+    return render(request,
+                'listings/band_create.html',
+                {'form': form})
+
+
 def listings(request):
     listings = Listing.objects.all()
     context = {
@@ -30,6 +48,21 @@ def listings(request):
     }
     
     return render(request, 'listings/listings.html', context)
+
+
+def listing_create(request):
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid():
+            # create a new `Listing` and save it to the db
+            listing = form.save()
+            # redirect to the detail page of the listing we just created
+            # we can provide the url pattern arguments as arguments to redirect function
+            return redirect('listings')
+    else:
+        form = ListingForm()
+    
+    return render(request, 'listings/listing_create.html', {'form': form})
 
 
 def contact(request):
